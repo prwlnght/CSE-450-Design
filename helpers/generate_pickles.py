@@ -27,8 +27,8 @@ save_dir = os.path.join(os.path.dirname(os.getcwd()), 'prog_assignment1', 'test_
 
 def generate_pickles(hm_hospitals=number_of_hospitals, hm_students=number_of_students, dir_to_save=save_dir):
 
-    hospital_ids = ['h_' + str(x) for x in range(1, hm_hospitals+1)]
-    student_ids = ['s_' + str(x) for x in range(1, hm_students+1)]
+    hospital_ids = [x for x in range(1, hm_hospitals+1)]
+    student_ids = [x for x in range(1, hm_students+1)]
 
     hospital_prefs = {}
     for h in hospital_ids:
@@ -41,7 +41,7 @@ def generate_pickles(hm_hospitals=number_of_hospitals, hm_students=number_of_stu
     for s in student_ids:
         this_prefs = list(range(1, hm_students + 1))
         random.shuffle(this_prefs)
-        hospital_prefs[h] = this_prefs
+        student_prefs[s] = this_prefs
 
     print(hospital_prefs)
     print(student_prefs)
@@ -58,4 +58,4 @@ def generate_pickles(hm_hospitals=number_of_hospitals, hm_students=number_of_stu
 
 
 if __name__ == '__main__':
-    generate_pickles(10, 10)
+    generate_pickles(15, 15)
