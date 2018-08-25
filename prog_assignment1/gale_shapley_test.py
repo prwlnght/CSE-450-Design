@@ -8,12 +8,21 @@ todo
 
 import os
 import pickle
+import sys
+sys.path.append('../')
+
+
+
+working_directory = os.getcwd()
+
+#setting current working directory to this directory 
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
+
 
 import prog_assignment1.gale_shapley as gs
 # import prog_assignment1.impl.gale_shapley_impl as gs
 
-this_dir = os.getcwd()
-
+this_dir = os.getcwd() #this directory 
 test_dir = os.path.join(this_dir, 'test_files')
 
 # run tests for each test_file
