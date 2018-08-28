@@ -15,6 +15,11 @@ sys.path.append('../')
 
 working_directory = os.getcwd()
 
+if platform.system() == 'Windows':
+    import resources_windows as resources
+else:
+    import resources_unix as resources
+
 #setting current working directory to this directory 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
