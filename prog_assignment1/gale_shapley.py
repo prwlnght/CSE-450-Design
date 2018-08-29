@@ -6,9 +6,16 @@ copyright @cse 450 Arizona State University
 
 '''
 
-import os, platform
+import os, platform, sys
 import pickle
 import time
+
+#setting current working directory to this directory 
+working_directory = os.getcwd()
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
+
+sys.path.append('../')
+
 
 if platform.system() == 'Windows':
     import resources_windows as resources

@@ -6,29 +6,28 @@ todo
 
 '''
 
-import os
+import os, sys, platform
 import pickle
 import sys
+
+
+#setting current working directory to this directory 
+working_directory = os.getcwd()
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
+
 sys.path.append('../')
 
-
-
-working_directory = os.getcwd()
 
 if platform.system() == 'Windows':
     import resources_windows as resources
 else:
     import resources_unix as resources
 
-#setting current working directory to this directory 
-os.chdir(os.path.dirname(os.path.abspath(__file__)))
-
-
 import prog_assignment1.gale_shapley as gs
 # import prog_assignment1.impl.gale_shapley_impl as gs
 
-this_dir = os.getcwd() #this directory 
-test_dir = os.path.join(this_dir, 'test_files')
+workspace_dir = resources.workspace_dir
+test_dir = os.path.join(workspace_dir, 'prog_assignment1', 'test_files')
 
 # run tests for each test_file
 
