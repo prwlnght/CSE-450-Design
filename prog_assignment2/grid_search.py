@@ -9,15 +9,10 @@ import pickle
 
 sys.path.append('../')
 sys.path.append('./')
-# sys.path.append('./impl/')
+sys.path.append('./impl/')
 
 import time
 
-'''
-
-
-
-'''
 
 working_directory = os.getcwd()
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
@@ -34,15 +29,19 @@ else:
 workspace_dir = resources.workspace_dir
 test_files_dir = os.path.join(workspace_dir, 'prog_assignment2', 'test_files')
 
-
 delay = 0.0000001  # for visualization purposes,for the final plotting.
 algos = [DFS, BFS, ASTAR]  # the algorithms to run
+m_test_filename = 'no-obstacles.pkl'
+
 
 # booleans
-to_test_from_pickles = False  # Please find a way to visualize and inspect some saved runs to get an idea of what is needed
-to_save_results = False  # Set this to true if you want to save all data to a pickle at the end of execution. Optional
+to_create_plots = True  # set to false to disable plotting
+to_test_from_pickles = True  # Please find a way to visualize and inspect some saved runs to get an idea of what is needed
+to_save_results = True  # Set this to true if you want to save all data to a pickle at the end of execution. Optional
 to_plot_all_paths_taken = True  # Set this to false, if you want to plot only the shortest path takenn
-to_time_delay = False #set this to true to visualize the path taken
+to_time_delay = False  # set this to true to visualize the path taken
+
+
 # A Heuristic for Astar
 def euclidean(a, b):
     return (b[0] - a[0]) ** 2 + (b[1] - a[1]) ** 2
@@ -56,7 +55,7 @@ def manhattan(a, b):
 # set the heuristic to use for Astar
 heuristic = euclidean
 # try different seeds to get a different map
-np.random.seed(15)
+np.random.seed(30)
 
 
 # initialize the graphing elements
@@ -96,7 +95,7 @@ def plot_search_paths(m_array, m_path, all_checked, start, end, ax, path_found, 
                     plt.pause(delay)
                 plt.draw()
 
-    #plot the final segment returned in a different color
+    # plot the final segment returned in a different color
     if path_found:
         m_path_x = [i[0] for i in reversed(m_path)]
         m_path_y = [i[1] for i in reversed(m_path)]
@@ -106,50 +105,53 @@ def plot_search_paths(m_array, m_path, all_checked, start, end, ax, path_found, 
             if to_time_delay:
                 plt.pause(delay)
 
+
 '''
 Saves the results to a new .pkl file 
 '''
-def save_results(nmap, all_checked_s, this_paths, start, end, successes, algos):
+
+
+def save_results(nmap, all_checked_s, this_paths, start, end, successes, algos, times):
     now = int(round(time.time() * 1000))
     filename = str(len(algos)) + '_' + str(now) + '.pkl'
     filepath = os.path.join(test_files_dir, filename)
     with open(filepath, 'wb') as f2:
-        pickle.dump([nmap, all_checked_s, this_paths, start, end, successes, algos], f2)
+        pickle.dump([nmap, all_checked_s, this_paths, start, end, successes, algos, times], f2)
 
 
-def test_from_pickles(filepath=None):
-    if filepath is None:
+def test_from_pickles(filename=m_test_filename):
+    if filename is None:
         filepaths = os.listdir(test_files_dir)
         for file in filepaths:
             filepath = os.path.join(test_files_dir, file)
             if filepath.endswith('.pkl'):
                 with open(filepath, 'rb') as f:
                     return (pickle.load(f))
-    elif filepath.endswith('.pkl'):
-            with open(filepath, 'rb') as f:
-                return (pickle.load(f))
+    elif filename.endswith('.pkl'):
+        filepath = os.path.join(test_files_dir, filename)
+        with open(filepath, 'rb') as f:
+            return (pickle.load(f))
     else:
         print('File path is invalid!')
 
 
-
 def grid_search_test():
-    #set algos to include or exclude searches
+    # set algos to include or exclude searches
     global algos
 
-    #set this boolean to true if you want to visualize or inspect how the code should run
+    # set this boolean to true if you want to visualize or inspect how the code should run
     if to_test_from_pickles:
 
-        nmap, start, end, all_checked_s, this_paths, successes, algos = test_from_pickles()
+        nmap, all_checked_s, this_paths, start, end, successes, algos, times = test_from_pickles()
         m_rows = nmap.shape[0]
         m_cols = nmap.shape[1]
 
     else:
         # creating a random map
-        m_rows = 200
-        m_cols = 200
-        p_obstacles = 0.5  # the probablity of obstacles in the grid. Set this to lower to get 'easier' grids
-        nmap = np.random.choice(2, p=(1.0-p_obstacles, p_obstacles), size=(m_rows, m_cols))
+        m_rows = 25
+        m_cols = 25
+        p_obstacles = 0  # 0-1 float, the probablity of obstacles in the grid. Set this to lower to get 'easier' grids
+        nmap = np.random.choice(2, p=(1.0 - p_obstacles, p_obstacles), size=(m_rows, m_cols))
         start = (np.random.randint(m_rows), np.random.randint(m_cols))
         end = (np.random.randint(m_rows), np.random.randint(m_cols))
 
@@ -162,30 +164,35 @@ def grid_search_test():
         nmap[end[0], end[1]] = 0
 
         for i in range(len(algos)):
-            successes[i], all_checked_s[i], this_paths[i], times[i]= algos[i](nmap, start, end, heuristic, diagnoal_allowed=True)
+            successes[i], all_checked_s[i], this_paths[i], times[i] = algos[i](nmap, start, end, heuristic,
+                                                                               diagnoal_allowed=True, peanlize_diagonals=False)
 
     # plotting
-    fig = plt.figure()
-    ax = init_graph(nmap, start, end, fig)
-    light_color = [(.8, .8, .8), (.4, .4, .4), (.6, .2, .2)]
+    if to_create_plots:
+        fig = plt.figure()
+        ax = init_graph(nmap, start, end, fig)
+    light_color = [(0, .2, .6), (0, .6, 0), (.6, .3, .2)]
     main_color = [(0, 0, 1), (0, 1, 0), (1, 0, 0)]
 
     for i in range(len(algos)):
         if successes[i] is True:
-            plot_search_paths(nmap, this_paths[i], all_checked_s[i], start, end, ax, successes[i], light_color[i],
-                              main_color[i])
+            if to_create_plots:
+                plot_search_paths(nmap, this_paths[i], all_checked_s[i], start, end, ax, successes[i], light_color[i],
+                                  main_color[i])
         else:
             print('No Path Exists!')
-            plot_search_paths(nmap, [(0, 0)], all_checked_s[i], start, end, ax, successes[i], light_color[i],
-                              main_color[i])
-        print(this_paths[i])
-        print(all_checked_s[i])
-        print(times[i])
+            if to_create_plots:
+                plot_search_paths(nmap, [(0, 0)], all_checked_s[i], start, end, ax, successes[i], light_color[i],
+                                  main_color[i])
+        #print(this_paths[i])
+        #print(all_checked_s[i])
+        print(algos[i].__name__, times[i])
 
     if to_save_results:
-        save_results(nmap, all_checked_s, this_paths, start, end, successes, algos)
+        save_results(nmap, all_checked_s, this_paths, start, end, successes, algos, times)
 
-    plt.show()
+    if to_create_plots:
+        plt.show()
 
 
 if __name__ == '__main__':
