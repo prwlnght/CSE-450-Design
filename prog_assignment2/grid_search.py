@@ -37,7 +37,7 @@ m_test_filename = 'no-obstacles.pkl'
 # booleans
 to_create_plots = True  # set to false to disable plotting
 to_test_from_pickles = True  # Please find a way to visualize and inspect some saved runs to get an idea of what is needed
-to_save_results = True  # Set this to true if you want to save all data to a pickle at the end of execution. Optional
+to_save_results = False  # Set this to true if you want to save all data to a pickle at the end of execution. Optional
 to_plot_all_paths_taken = True  # Set this to false, if you want to plot only the shortest path takenn
 to_time_delay = False  # set this to true to visualize the path taken
 
