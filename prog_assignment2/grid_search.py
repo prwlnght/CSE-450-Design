@@ -196,7 +196,4 @@ def grid_search_test():
 
 
 if __name__ == '__main__':
-    '''Here is an example of using my algo with a numpy array,
-       astar(array, start, destination)
-       astar function returns a list of points (shortest path)'''
     grid_search_test()
