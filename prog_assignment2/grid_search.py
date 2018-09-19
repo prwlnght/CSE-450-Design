@@ -31,7 +31,7 @@ test_files_dir = os.path.join(workspace_dir, 'prog_assignment2', 'test_files')
 
 delay = 0.0000001  # for visualization purposes,for the final plotting.
 algos = [DFS, BFS, ASTAR]  # the algorithms to run
-m_test_filename = 'no-obstacles.pkl'
+m_test_filename = 'no_obstacles.pkl'
 
 
 # booleans
